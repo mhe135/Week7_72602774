@@ -28,4 +28,40 @@ nz_map
 
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+\## Adding Markers
+
+```{r}
+#| echo: false
+# New Zealand maps for three cities.
+nz_cities <- data.frame(
+  city = c("Auckland", "Wellington", "Christchurch"),
+  lat = c(-36.8485, -41.2865, -43.5321),
+  lng = c(174.7633, 174.7762, 172.6362),
+  population = c(1626000, 215900, 381500)
+)
+
+# Add markers with title
+nz_map_pop <- leaflet(nz_cities) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  setView(lng = 174.8860, lat = -40.9006, zoom = 5) %>%
+  addMarkers(~lng, ~lat, popup = ~paste(city, "<br>Population:", population))
+
+nz_map_pop
+
+```
+
+## Heatmap
+
+### Choropleth Map
+
+```{r}
+#| echo: false
+library(leaflet.extras)
+# Create a heatmap by survey data of population
+nz_map_heatmap <- leaflet(nz_cities) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  addHeatmap(lng = ~lng, lat = ~lat, intensity = ~population, blur = 20, max = 1, radius = 15)
+
+nz_map_heatmap
+
+```
