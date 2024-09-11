@@ -65,3 +65,22 @@ nz_map_heatmap <- leaflet(nz_cities) %>%
 nz_map_heatmap
 
 ```
+
+## Read a.geoJSON file
+
+```{r}
+#| echo: false
+library(sf)
+library(dplyr)
+# Create path to read geojson file
+nz_geojson <- st_read("~/Desktop/nz_ta.geojson")
+#print.data.frame(nz_geojson)
+#clean data by rename the col name to a readable name for furthur merge operation in task7.
+nz_geojson <- nz_geojson %>%
+  rename(region = TA2016_NAM ) %>%
+  select(region)
+ 
+#summary(nz_geojson$region)
+#summary(nz_geojson$TA2016_NAM)
+
+```
