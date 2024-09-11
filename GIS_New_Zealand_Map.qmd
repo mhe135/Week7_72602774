@@ -84,3 +84,15 @@ nz_geojson <- nz_geojson %>%
 #summary(nz_geojson$TA2016_NAM)
 
 ```
+
+## Create a black and white plot for regions
+
+```{r}
+#| echo: false
+library(ggplot2)
+# Black and white plot of NZ territories
+ggplot(nz_geojson) +
+  geom_sf() +
+  theme_void()
+
+```
