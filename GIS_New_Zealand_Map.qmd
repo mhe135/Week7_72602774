@@ -1,0 +1,31 @@
+---
+title: "GIS_New_Zealand_Map"
+format: html
+editor: visual
+---
+
+```{r include=FALSE}
+# Set a CRAN mirror
+options(repos = c(CRAN = "https://cran.rstudio.com/"))
+library(plotly)
+library(sf)
+library(dplyr)
+library(RColorBrewer)
+#library(ggplot)
+#library(ggplotly)
+```
+
+## Basic Map
+
+```{r}
+#| echo: false
+library(leaflet)
+# Create a basic map of New Zealand
+nz_map <- leaflet() %>%
+  addTiles() %>%
+  setView(lng = 174.8860, lat = -40.9006, zoom = 5)  # Coordinates of New Zealand
+nz_map
+
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
