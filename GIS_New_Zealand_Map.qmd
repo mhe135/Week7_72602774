@@ -176,5 +176,41 @@ nz_plot
 
 # Save the plot in png format
 ggsave("nz_plot.png")
+## Extra
+```
+
+## Extra
+
+```{r warning=FALSE}
+#| echo: false
+library(plotly)
+library(sf)
+library(dplyr)
+library(RColorBrewer)
+# Create the choropleth map with tooltips
+nz_plot <- ggplot(nz_merged) +  
+  geom_sf(aes(fill = log(population), 
+              text = paste("Territory:", region, "<br>Log Population:", log(population)))) +  # Add text aesthetic for tooltips
+  theme_void() +  # Remove the default axes, labels, and grid lines for a cleaner map
+  scale_fill_viridis_c(option = "C", name = "Log Population", direction = -1) +  # Reverse color scale for light-to-dark
+  labs(
+    title = "Enhanced Choropleth Map",  # Title of the map
+    subtitle = "Log-transformed Population",  # Subtitle providing additional context
+    caption = "Source: StatsNZ"  # Caption to credit data source
+  )
+
+# Convert ggplot to an interactive plotly plot
+nz_map_interactive <- ggplotly(nz_plot, tooltip = "text")  # Ensure "text" aesthetic exists in the plot
+
+# Customize the layout of the interactive map
+nz_map_interactive <- nz_map_interactive %>% 
+  layout(
+    title = list(text = "<b>New Zealand Population Choropleth Map</b>", font = list(size = 20)),
+    font = list(family = "Arial", color = "black"),
+    plot_bgcolor = "white",
+    paper_bgcolor = "white"
+  )
+# Display the plot
+nz_map_interactive
 
 ```
