@@ -96,3 +96,85 @@ ggplot(nz_geojson) +
   theme_void()
 
 ```
+
+## Load numeric data
+
+```{r}
+#| echo: false
+#install.packages("dplyr")
+
+library(dplyr)
+# Load 2016 population data
+nz_population <- read.csv("~/Desktop/nz_territory_2016_population.csv")  
+#print(nz_population)
+# Clean data,change column name of raw data to a readable name
+nz_population <- nz_population %>%
+  rename(territory = nz_territory, 
+         population= X2016_population) %>%
+  select(territory, population)
+ 
+# Check the distribution
+#summary(nz_population$population)
+ggplot(nz_population, aes(x = reorder(territory, -population), y = population)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  labs(title = "Population Distribution by Territory ", 
+       x = "Territory", 
+       y = "Population") +
+  scale_y_continuous(labels = scales::comma) +  
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        plot.title = element_text(hjust = 0.5)) 
+```
+
+```{r}
+#| echo: false
+# Merge geospatial and numeric data
+# Standardize the names by change to lowercase
+
+nz_population$territory <- trimws(tolower(nz_population$territory))
+nz_geojson$region<- trimws(tolower(nz_geojson$region)) 
+
+# Perform the left join again
+nz_merged <- dplyr::left_join(nz_geojson, nz_population, by = c("region" = "territory"))
+
+nz_merged <- nz_merged %>% filter(!is.na(population))
+
+```
+
+## Basic choropleth
+
+```{r}
+#| echo: false
+# Generate first choropleth map with non-transformed population count
+ggplot(nz_merged) +
+  geom_sf(aes(fill = population)) +
+  theme_void()
+
+```
+
+## Improved choropleth map
+
+```{r}
+#| echo: false
+
+# Generate first choropleth map with non-transformed population count
+# Enhanced choropleth map
+nz_plot <- ggplot(nz_merged) +
+  geom_sf(aes(fill = log(population))) +
+  scale_fill_viridis_c() +
+  labs(title = "Population Density of New Zealand Territories",
+       subtitle = "Log-transformed Population Data",
+       caption = "Source: StatsNZ") +
+  theme_void() +
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 10)
+  )
+
+# View plot
+nz_plot
+
+# Save the plot in png format
+ggsave("nz_plot.png")
+
+```
